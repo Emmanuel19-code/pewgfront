@@ -7,7 +7,7 @@ import axios from "axios";
 
 const Home = () => {
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [otherName, setOtherName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
@@ -24,22 +24,21 @@ const Home = () => {
   const [studentCourse, setStudentCourse] = useState("");
   const [studentLevel, setStudentLevel] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [title,setTitle] = useState("")
+  const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false); // Loader state
   const [imagePreview, setImagePreview] = useState(null); // Add this line
-
-
- 
+  const [otherProfession, setOtherProfession] = useState("");
+  const [studentStatus, setStudentStatus] = useState("No");
   useEffect(() => {
-    if (firstName && lastName && email && phone && gender) {
+    if (firstName && otherName && email && phone && gender) {
       setDisable(false);
     }
-  }, [firstName, lastName, email, phone, gender]);
+  }, [firstName, otherName, email, phone, gender]);
   const notify = (msg) => toast(msg);
   const UploadData = async (data) => {
     try {
       const res = await axios.post(
-         "http://localhost:5000/api/register-pewg-members",
+        "http://localhost:5000/api/register-pewg-members",
         //"https://pewgapi.echgh.bid/api/pewg-members",
         data
       );
@@ -47,7 +46,7 @@ const Home = () => {
     } catch (error) {
       setLoading(false); // Hide loader
       console.log(error);
-      
+
       if (error.response) {
         // Server responded with a status code out of 2xx range
         console.error("Error Response Details:", {
@@ -72,37 +71,38 @@ const Home = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Determine the profession based on student status
+    const profession = studentStatus === "Yes" ? "Student" : (otherProfession ? otherProfession : selectedProfession?.value);
+  
     const formData = new FormData();
-    formData.append("title",title)
+    formData.append("title", title);
     formData.append("image", image);
     formData.append("firstName", firstName);
-    formData.append("lastName", lastName);
+    formData.append("otherName", otherName);
     formData.append("email", email);
     formData.append("phone", phone);
     formData.append("gender", gender);
     formData.append("selectedArea", selectedArea?.value);
     formData.append("district", district);
     formData.append("local", local);
-    formData.append(
-      "selectedProfession",
-      selectedStatus?.value === "Student"
-        ? selectedStatus?.value
-        : selectedProfession?.value
-    );
+    formData.append("selectedProfession", profession); // Use the calculated profession
     formData.append("selectedGuild", selectedGuild?.value);
     formData.append("selectedStatus", selectedStatus?.value);
     formData.append("studentSchool", studentSchool);
     formData.append("studentCourse", studentCourse);
     formData.append("studentLevel", studentLevel);
-
+  
     setLoading(true); // Show loader
-
+  
     try {
       const response = await UploadData(formData);
       if (response) {
         notify(response.data?.msg || "Registration successful");
+        // Reset state to initial values
+        setTitle("");
         setFirstName("");
-        setLastName("");
+        setOtherName("");
         setEmail("");
         setPhone("");
         setGender("");
@@ -116,8 +116,9 @@ const Home = () => {
         setStudentSchool("");
         setStudentCourse("");
         setStudentLevel("");
+        setOtherProfession("");
         setPage(0);
-
+  
         setLoading(false); // Hide loader
       }
     } catch (error) {
@@ -126,6 +127,7 @@ const Home = () => {
       toast.error(error.response?.data?.msg || "Registration failed");
     }
   };
+  
 
   return (
     <div className="bg-slate-50 min-h-screen ">
@@ -155,14 +157,15 @@ const Home = () => {
               <div className="flex flex-col gap-4 mb-4">
                 <div className="flex flex-col gap-4 mb-4 md:flex-row">
                   <div className="flex flex-col w-full md:w-1/2">
-                    <label
-                      htmlFor="first_name"
-                      className="block mb-2 text-sm font-medium text-gray-900"
-                    >
+                    <label className="block mb-2 text-sm font-medium text-gray-900">
                       Title <span className="text-red-600">*</span>
                     </label>
 
-                    <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" value={title} onChange={(e)=>setTitle(e.target.value)}>
+                    <select
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                    >
                       <option>Select Title</option>
                       <option value="Apostle">Apostle</option>
                       <option value="Prophet">Prophet</option>
@@ -205,15 +208,14 @@ const Home = () => {
                       htmlFor="first_name"
                       className="block mb-2 text-sm font-medium text-gray-900"
                     >
-                      Last name <span className="text-red-600">*</span>
+                      Other names <span className="text-red-600">*</span>
                     </label>
                     <input
                       type="text"
-                      id="first_name"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                       placeholder="John"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
+                      value={otherName}
+                      onChange={(e) => setOtherName(e.target.value)}
                       required
                     />
                   </div>
@@ -225,8 +227,7 @@ const Home = () => {
                       Email <span className="text-red-600">*</span>
                     </label>
                     <input
-                      type="text"
-                      id="last_name"
+                      type="email"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                       placeholder="john.doe@company.com"
                       value={email}
@@ -376,6 +377,10 @@ const Home = () => {
               setStudentSchool={setStudentSchool}
               studentLevel={studentLevel}
               setStudentLevel={setStudentLevel}
+              otherProfession={otherProfession}
+              setOtherProfession={setOtherProfession}
+              studentStatus={studentStatus}
+              setStudentStatus={setStudentStatus}
             />
           )}
         </form>

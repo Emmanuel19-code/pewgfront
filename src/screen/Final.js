@@ -20,20 +20,23 @@ const Final = ({
   setStudentLevel,
   studentCourse,
   setStudentCourse,
+  otherProfession,
+  setOtherProfession,
+  studentStatus,
+  setStudentStatus
 }) => {
   const [disable, setDisable] = useState(true);
-  const [studentStatus, setStudentStatus] = useState("No");
   useEffect(() => {
     if (selectedGuild && selectedProfession && selectedStatus) {
       setDisable(false);
     }
   }, [selectedGuild, selectedProfession, selectedStatus]);
- useEffect(()=>{
-  if(studentStatus === "Yes"){
-     setSelectedProfession("Student")
-     setSelectedGuild("Student")
-  }
- },[studentStatus])
+  useEffect(() => {
+    if (studentStatus === "Yes") {
+      setSelectedProfession("Student");
+      setSelectedGuild("Student");
+    }
+  }, [studentStatus]);
   const handleProfessionChange = (selectedOption) => {
     setSelectedProfession(selectedOption);
   };
@@ -45,7 +48,8 @@ const Final = ({
   const handleStatusChange = (selectedOption) => {
     setSelectedStatus(selectedOption);
   };
-
+ 
+ 
   return (
     <div className="">
       <div className="">
@@ -103,6 +107,28 @@ const Final = ({
               </div>
             </div>
           )}
+          {selectedProfession?.value === "Other" && (
+            <div>
+              <div className="flex flex-col">
+                <label
+                  htmlFor="first_name"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Other Profession
+                </label>
+                <input
+                  type="text"
+            
+                  className=" border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                  placeholder="Enter Your Profession if you can't find it in the list"
+                  value={otherProfession}
+                  onChange={(e) => setOtherProfession(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+          )}
+
           {studentStatus === "No" && (
             <div className="mb-4">
               <label

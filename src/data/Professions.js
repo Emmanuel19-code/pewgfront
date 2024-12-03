@@ -149,5 +149,6 @@ export const Profession = [
   { value: "User Experience Researcher", label: "User Experience Researcher" },
   { value: "Voiceover Artist", label: "Voiceover Artist" },
   { value: "Web Developer", label: "Web Developer" },
-  { value: "Wind Turbine Technician", label: "Wind Turbine Technician" }
+  { value: "Wind Turbine Technician", label: "Wind Turbine Technician" },
+  {value:"Other", label:"Other"}
 ];
