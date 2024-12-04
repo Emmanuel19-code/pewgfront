@@ -181,7 +181,7 @@ const Final = ({
                 </label>
                 <input
                   type="text"
-                  id="first_name"
+                  
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                   placeholder="John"
                   value={studentSchool}
@@ -198,7 +198,6 @@ const Final = ({
                 </label>
                 <input
                   type="text"
-                  id="first_name"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                   placeholder="John"
                   value={studentCourse}
@@ -215,7 +214,6 @@ const Final = ({
                 </label>
                 <input
                   type="text"
-                  id="first_name"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                   placeholder="John"
                   value={studentLevel}

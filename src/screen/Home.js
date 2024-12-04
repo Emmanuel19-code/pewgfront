@@ -8,6 +8,7 @@ import axios from "axios";
 const Home = () => {
   const [firstName, setFirstName] = useState("");
   const [otherName, setOtherName] = useState("");
+  const [lastName,setLastName] = useState("")
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
@@ -30,10 +31,10 @@ const Home = () => {
   const [otherProfession, setOtherProfession] = useState("");
   const [studentStatus, setStudentStatus] = useState("No");
   useEffect(() => {
-    if (firstName && otherName && email && phone && gender) {
+    if (firstName && lastName && phone && gender) {
       setDisable(false);
     }
-  }, [firstName, otherName, email, phone, gender]);
+  }, [firstName, lastName, email, phone, gender]);
   const notify = (msg) => toast(msg);
   const UploadData = async (data) => {
     try {
@@ -71,30 +72,36 @@ const Home = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Determine the profession based on student status
-    const profession = studentStatus === "Yes" ? "Student" : (otherProfession ? otherProfession : selectedProfession?.value);
-  
+    const profession =
+      studentStatus === "Yes"
+        ? "Student"
+        : otherProfession
+        ? otherProfession
+        : selectedProfession?.value;
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("image", image);
     formData.append("firstName", firstName);
     formData.append("otherName", otherName);
+    formData.append("lastName",lastName)
     formData.append("email", email);
     formData.append("phone", phone);
     formData.append("gender", gender);
     formData.append("selectedArea", selectedArea?.value);
     formData.append("district", district);
     formData.append("local", local);
-    formData.append("selectedProfession", profession); // Use the calculated profession
+    formData.append("selectedProfession", profession); 
     formData.append("selectedGuild", selectedGuild?.value);
     formData.append("selectedStatus", selectedStatus?.value);
     formData.append("studentSchool", studentSchool);
     formData.append("studentCourse", studentCourse);
     formData.append("studentLevel", studentLevel);
-  
+
     setLoading(true); // Show loader
-  
+
     try {
       const response = await UploadData(formData);
       if (response) {
@@ -103,6 +110,7 @@ const Home = () => {
         setTitle("");
         setFirstName("");
         setOtherName("");
+        setLastName("")
         setEmail("");
         setPhone("");
         setGender("");
@@ -117,8 +125,9 @@ const Home = () => {
         setStudentCourse("");
         setStudentLevel("");
         setOtherProfession("");
+        setStudentStatus("No")
         setPage(0);
-  
+
         setLoading(false); // Hide loader
       }
     } catch (error) {
@@ -127,7 +136,6 @@ const Home = () => {
       toast.error(error.response?.data?.msg || "Registration failed");
     }
   };
-  
 
   return (
     <div className="bg-slate-50 min-h-screen ">
@@ -205,10 +213,27 @@ const Home = () => {
                 <div className="flex flex-col gap-4 mb-4 md:flex-row">
                   <div className="flex flex-col w-full md:w-1/2">
                     <label
+                      htmlFor="last_name"
+                      className="block mb-2 text-sm font-medium text-gray-900"
+                    >
+                      Last name <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="last_name"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                      placeholder="Doe"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="flex flex-col w-full md:w-1/2">
+                    <label
                       htmlFor="first_name"
                       className="block mb-2 text-sm font-medium text-gray-900"
                     >
-                      Other names <span className="text-red-600">*</span>
+                      Other names 
                     </label>
                     <input
                       type="text"
@@ -219,12 +244,16 @@ const Home = () => {
                       required
                     />
                   </div>
-                  <div className="flex flex-col w-full md:w-1/2">
+                </div>
+              </div>
+              
+                <div className="flex flex-col gap-4 mb-4 md:flex-row">
+                  <div className="flex flex-col w-full md:w-full">
                     <label
                       htmlFor="last_name"
                       className="block mb-2 text-sm font-medium text-gray-900"
                     >
-                      Email <span className="text-red-600">*</span>
+                      Email 
                     </label>
                     <input
                       type="email"
@@ -236,7 +265,7 @@ const Home = () => {
                     />
                   </div>
                 </div>
-              </div>
+              
 
               <div className="flex flex-col gap-4 mb-4 md:flex-row">
                 <div className="flex flex-col w-full md:w-1/2">
@@ -311,7 +340,7 @@ const Home = () => {
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="w-40 h-40 object-cover border rounded-lg shadow"
+                      className="w-20 h-20 object-cover border rounded-lg shadow"
                     />
                     <button
                       type="button"
@@ -330,7 +359,7 @@ const Home = () => {
                     <img
                       src="person.png"
                       alt="sample_image"
-                      className="w-48 h-48 "
+                      className="w-20 h-20 "
                     />
                   </div>
                 )}
